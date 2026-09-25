@@ -170,8 +170,6 @@ button.chip:hover{border-color:var(--charcoal)}
         <h3>Formato</h3><div id="fTipo"></div>
         <h3>Base</h3><div id="fLocMacro"></div><div id="fLocCidades" hidden></div>
         <h3>Tags</h3><div class="chips" id="fTags"></div>
-        <h3>Reconhecimento</h3>
-        <select id="fRep"><option value="any">Qualquer nível</option><option value="4">Referência</option><option value="3">Consolidado ou mais</option><option value="2">Em consolidação ou mais</option><option value="nt">New talent</option><option value="int">Internacional</option><option value="sc">Sem classificação</option></select>
         <h3>Ordenar por</h3>
         <select id="fSort"><option value="rep" selected>Reconhecimento (maior primeiro)</option><option value="az">Nome (A–Z)</option></select>
         <h3>Outros</h3>
@@ -304,7 +302,7 @@ function card(d,extra){
     <div class="cat">${esc(d.categoria||[...d.tags].slice(0,2).map(tl).join(" + "))}</div>
     <h2>${esc(d.nome)}${d.tipo!=="individual"?` <span class="prod">(${esc(d.tipo)})</span>`:""}</h2>
     <div class="prod">${esc(d.produtora)}${d.localizacao?" · "+esc(d.localizacao):""}</div>
-    ${repBadge(d)}${rankBadge(d)}${extra&&extra.fit!=null?`<div class="fitline">aderência ${extra.fit} · reconhecimento ${repVal(d)}</div>`:""}
+    ${rankBadge(d)}${extra&&extra.fit!=null?`<div class="fitline">aderência ${extra.fit}</div>`:""}
     ${d.tagline?`<div class="tag">${esc(d.tagline)}</div>`:""}
     ${d.clientes_destaque.length?`<div class="brands"><b>Marcas:</b> ${esc(d.clientes_destaque.join(", "))}</div>`:""}
     ${extra&&extra.hits?`<div class="chips">${extra.hits.map(h=>`<span class="chip hit" title="${(d.tags||[]).includes(h)?"Tag curada":"Inferida do texto/marcas"}">${esc(tl(h))}</span>`).join("")}${(extra.miss||[]).map(h=>`<span class="chip miss" title="Não consta no perfil">${esc(tl(h))}</span>`).join("")}</div>`:`<div class="chips">${(d.tags||[]).slice(0,6).map(t=>`<span class="chip">${esc(tl(t))}</span>`).join("")}</div>`}
@@ -379,8 +377,6 @@ function renderAcervo(){
     if(F.locmacro.size&&!((F.locmacro.has("Brasil")&&d._locBR)||(F.locmacro.has("Internacional")&&d._locINTL)))return false;
     if(F.loc.size&&!d._locParts.some(p=>F.loc.has(locChave(p))))return false;
     if([...F.tag].some(t=>!d._all.has(t)))return false;
-    { const mr=$("#fRep").value;if(mr!=="any"){const n=d.reputacao?d.reputacao.nivel:"Sem classificação",NR={"Referência":4,"Consolidado":3,"Em consolidação":2};
-      if(mr==="int"){if(n!=="Internacional")return false}else if(mr==="nt"){if(n!=="New talent")return false}else if(mr==="sc"){if(n!=="Sem classificação"&&n!=="Dados insuficientes")return false}else if((NR[n]||0)<+mr)return false} }
     if($("#fFull").checked&&!isFull(d))return false;
     if($("#fShort").checked&&!short.has(d.id))return false;
     if(q){const hay=norm([d.nome,d.produtora,d.categoria,d.tagline,d.bio,[...d._all].map(tl).join(" "),(d.tags_originais||[]).join(" "),d.clientes_destaque.join(" "),d.membros.join(" "),(d.nomes_alternativos||[]).join(" ")].join(" "));if(!q.split(/\s+/).every(w=>hay.includes(w)))return false}
@@ -391,7 +387,7 @@ function renderAcervo(){
   $("#acount").textContent=`${r.length} de ${D.length} diretores`;
   $("#agrid").innerHTML=r.map(d=>card(d)).join("");
 }
-document.querySelectorAll("#fFull,#fShort,#fRep,#fSort").forEach(x=>x.onchange=renderAcervo);
+document.querySelectorAll("#fFull,#fShort,#fSort").forEach(x=>x.onchange=renderAcervo);
 bindCards($("#agrid"));
 
 // ---------- Ficha ----------
@@ -406,7 +402,6 @@ function openDrawer(id){
     ${d.tagline?`<h4>Em uma linha</h4><p>${esc(d.tagline)}</p>`:""}    <h4>Bio</h4><p>${d.bio?esc(d.bio):'<span class="hint">Ainda não preenchida.</span>'}</p>
     <h4>Quando acionar</h4><p>${d.quando_acionar?esc(d.quando_acionar):'<span class="hint">Ainda não preenchido.</span>'}</p>
     <h4>Marcas em destaque</h4>${d.clientes_destaque.length?`<div class="chips">${d.clientes_destaque.map(c=>`<span class="chip">${esc(c)}</span>`).join("")}</div>`:'<span class="hint">Ainda não preenchidas.</span>'}
-    ${d.reputacao?`<h4>Reconhecimento</h4><p>${repBadge(d)}</p>`:""}
     ${(d.premios||[]).length?`<h4>Prêmios</h4><p>${d.premios.map(x=>{const t=lp(x.premio||[x.festival,x.nivel==="Outro"?"":x.nivel,x.categoria?"· "+x.categoria:"",x.ano?"("+x.ano+")":"",x.trabalho&&x.trabalho!=="não especificado"?"— "+x.trabalho:""].filter(Boolean).join(" "));return x.fonte?`<a href="${esc(x.fonte)}" target="_blank" rel="noopener">${esc(t)}</a>`:esc(t)}).join("<br>")}</p>`:""}
     ${(d.trabalhos_notaveis||[]).length?`<h4>Trabalhos notáveis</h4><p>${d.trabalhos_notaveis.map(x=>{const t=[x.titulo,x.marca?"· "+x.marca:"",x.agencia?"· "+x.agencia:"",x.ano?"("+x.ano+")":""].filter(Boolean).join(" ");return x.fonte?`<a href="${esc(x.fonte)}" target="_blank" rel="noopener">${esc(t)}</a>`:esc(t)}).join("<br>")}</p>`:""}
     <h4>Tags</h4>${(d.tags.length||(d.tags_inferidas||[]).length)?`<div class="chips">${d.tags.map(c=>`<span class="chip">${esc(tl(c))}</span>`).join("")}${(d.tags_inferidas||[]).map(c=>`<span class="chip inf" title="Inferida do texto ou das marcas">${esc(tl(c))}</span>`).join("")}</div>${(d.tags_inferidas||[]).length?'<p class="hint" style="margin-top:6px">Tags tracejadas foram inferidas do texto e das marcas.</p>':""}`:'<span class="hint">Sem tags.</span>'}
