@@ -353,12 +353,14 @@ function checks(el,key,pairs){
 checks("#fProd","prod",counts(d=>d.produtora));
 checks("#fTipo","tipo",counts(d=>d.tipo));
 checks("#fLocMacro","locmacro",[["Brasil",D.filter(d=>d._locBR).length],["Internacional",D.filter(d=>d._locINTL).length]]);
+const paisDe=p=>p==="Internacional"?"Internacional":p==="Cidade da Guatemala"?"Guatemala":p==="Cidade do México"?"México":p.includes(",")?p.split(",").pop().trim():p;
+const locChave=p=>ehBR(p)?p:paisDe(p); // Brasil fica por cidade; internacional agrupa por país
 function renderLocCidades(){ // cada parte da base (separada por " / ") entra como opção própria — sem opção combinada
   const sel=F.locmacro;$("#fLocCidades").hidden=!sel.size;if(!sel.size){$("#fLocCidades").innerHTML="";return}
   const soBR=sel.has("Brasil")&&!sel.has("Internacional"),soIntl=sel.has("Internacional")&&!sel.has("Brasil");
   const subset=D.filter(d=>(sel.has("Brasil")&&d._locBR)||(sel.has("Internacional")&&d._locINTL));
   const m={};
-  subset.forEach(d=>{const partes=d._locParts.filter(p=>soBR?ehBR(p):soIntl?!ehBR(p):true);new Set(partes).forEach(p=>m[p]=(m[p]||0)+1)});
+  subset.forEach(d=>{const partes=d._locParts.filter(p=>soBR?ehBR(p):soIntl?!ehBR(p):true);new Set(partes.map(locChave)).forEach(p=>m[p]=(m[p]||0)+1)});
   checks("#fLocCidades","loc",Object.entries(m).sort((a,b)=>b[1]-a[1]));
 }
 $("#fTags").innerHTML=byFacet().map(([f,l])=>`<div class="fh" style="width:100%">${esc(TAX.facetas[f])}</div>${l.map(t=>`<button class="chip" data-tag="${esc(t.id)}">${esc(t.rotulo)} ${df[t.id]||0}</button>`).join("")}`).join("");
@@ -375,7 +377,7 @@ function renderAcervo(){
     if(F.prod.size&&!F.prod.has(d.produtora))return false;
     if(F.tipo.size&&!F.tipo.has(d.tipo))return false;
     if(F.locmacro.size&&!((F.locmacro.has("Brasil")&&d._locBR)||(F.locmacro.has("Internacional")&&d._locINTL)))return false;
-    if(F.loc.size&&!d._locParts.some(p=>F.loc.has(p)))return false;
+    if(F.loc.size&&!d._locParts.some(p=>F.loc.has(locChave(p))))return false;
     if([...F.tag].some(t=>!d._all.has(t)))return false;
     { const mr=$("#fRep").value;if(mr!=="any"){const n=d.reputacao?d.reputacao.nivel:"Sem classificação",NR={"Referência":4,"Consolidado":3,"Em consolidação":2};
       if(mr==="int"){if(n!=="Internacional")return false}else if(mr==="nt"){if(n!=="New talent")return false}else if(mr==="sc"){if(n!=="Sem classificação"&&n!=="Dados insuficientes")return false}else if((NR[n]||0)<+mr)return false} }
