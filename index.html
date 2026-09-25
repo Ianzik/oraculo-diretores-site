@@ -168,7 +168,7 @@ button.chip:hover{border-color:var(--charcoal)}
         <input type="search" id="q" placeholder="Buscar nome, marca, tag...">
         <h3>Produtora</h3><div id="fProd"></div>
         <h3>Formato</h3><div id="fTipo"></div>
-        <h3>Base</h3><div id="fLoc"></div>
+        <h3>Base</h3><div id="fLocMacro"></div><div id="fLocCidades" hidden></div>
         <h3>Tags</h3><div class="chips" id="fTags"></div>
         <h3>Reconhecimento</h3>
         <select id="fRep"><option value="any">Qualquer nível</option><option value="4">Referência</option><option value="3">Consolidado ou mais</option><option value="2">Em consolidação ou mais</option><option value="nt">New talent</option><option value="int">Internacional</option><option value="sc">Sem classificação</option></select>
@@ -235,6 +235,10 @@ function detectTags(text){ // texto corrido: ignora sinônimos ambíguos
   return out;
 }
 D.forEach(d=>d._all=new Set([...(d.tags||[]),...(d.tags_inferidas||[])]));
+// Base: Brasil x Internacional (macro), depois cidade específica. UFs brasileiras conhecidas na base "Cidade, UF".
+const UF_BR=new Set("AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" "));
+const ehBR=p=>p==="Brasil"||p==="Bahia"||UF_BR.has(p.split(",").pop().trim());
+D.forEach(d=>{const partes=d.localizacao?d.localizacao.split(" / "):[];d._locBR=partes.some(ehBR);d._locINTL=partes.some(p=>!ehBR(p))});
 const df={};D.forEach(d=>d._all.forEach(t=>df[t]=(df[t]||0)+1));
 const idf=t=>Math.log(D.length/(1+(df[t]||0)))+1; // tags raras pesam mais que as onipresentes
 const byFacet=()=>Object.keys(TAX.facetas).map(f=>[f,TAX.tags.filter(t=>t.faceta===f&&(df[t.id]||0)>=2).sort((a,b)=>(df[b.id]||0)-(df[a.id]||0))]);
@@ -341,17 +345,23 @@ $("#clear").onclick=()=>{$("#brief").value="";picked.clear();ignored.clear();ign
 bindCards($("#ogrid"));
 
 // ---------- Acervo ----------
-const F={prod:new Set(),tipo:new Set(),loc:new Set(),tag:new Set()};
-const counts=k=>{const m={};D.forEach(d=>{const v=k(d);if(v)m[v]=(m[v]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1])};
+const F={prod:new Set(),tipo:new Set(),loc:new Set(),tag:new Set(),locmacro:new Set()};
+const counts=(k,arr=D)=>{const m={};arr.forEach(d=>{const v=k(d);if(v)m[v]=(m[v]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1])};
 function checks(el,key,pairs){
   $(el).innerHTML=pairs.map(([v,n])=>`<label><input type="checkbox" data-k="${key}" value="${esc(v)}"> ${esc(v)}<span class="n">${n}</span></label>`).join("");
 }
 checks("#fProd","prod",counts(d=>d.produtora));
 checks("#fTipo","tipo",counts(d=>d.tipo));
-checks("#fLoc","loc",counts(d=>d.localizacao));
+checks("#fLocMacro","locmacro",[["Brasil",D.filter(d=>d._locBR).length],["Internacional",D.filter(d=>d._locINTL).length]]);
+function renderLocCidades(){
+  const sel=F.locmacro;$("#fLocCidades").hidden=!sel.size;if(!sel.size){$("#fLocCidades").innerHTML="";return}
+  const subset=D.filter(d=>(sel.has("Brasil")&&d._locBR)||(sel.has("Internacional")&&d._locINTL));
+  checks("#fLocCidades","loc",counts(d=>d.localizacao,subset));
+}
 $("#fTags").innerHTML=byFacet().map(([f,l])=>`<div class="fh" style="width:100%">${esc(TAX.facetas[f])}</div>${l.map(t=>`<button class="chip" data-tag="${esc(t.id)}">${esc(t.rotulo)} ${df[t.id]||0}</button>`).join("")}`).join("");
 document.querySelector(".side").addEventListener("change",e=>{
   const i=e.target;if(i.dataset.k){i.checked?F[i.dataset.k].add(i.value):F[i.dataset.k].delete(i.value)}
+  if(i.dataset.k==="locmacro"){F.loc.clear();renderLocCidades()}
   renderAcervo();
 });
 $("#fTags").onclick=e=>{const b=e.target.closest("[data-tag]");if(!b)return;const t=b.dataset.tag;F.tag.has(t)?F.tag.delete(t):F.tag.add(t);b.classList.toggle("on");renderAcervo()};
@@ -361,6 +371,7 @@ function renderAcervo(){
   const r=D.filter(d=>{
     if(F.prod.size&&!F.prod.has(d.produtora))return false;
     if(F.tipo.size&&!F.tipo.has(d.tipo))return false;
+    if(F.locmacro.size&&!((F.locmacro.has("Brasil")&&d._locBR)||(F.locmacro.has("Internacional")&&d._locINTL)))return false;
     if(F.loc.size&&!F.loc.has(d.localizacao))return false;
     if([...F.tag].some(t=>!d._all.has(t)))return false;
     { const mr=$("#fRep").value;if(mr!=="any"){const n=d.reputacao?d.reputacao.nivel:"Sem classificação",NR={"Referência":4,"Consolidado":3,"Em consolidação":2};
