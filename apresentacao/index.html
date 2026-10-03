@@ -1,0 +1,566 @@
+<!-- Efeitos baseados em Cinematic Site Modules, (c) 2026 Jay from RoboLabs, licença MIT: https://github.com/robonuggets/cinematic-site-components -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oráculo de Diretores</title>
+<meta name="description" content="Curadoria de diretores de cena com IA. Apresentação para o Concurso Mensal de IA Aplicado na Prática, outubro de 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+  /* Sistema Oura (DESIGN.md do projeto): creme, carvão, serifa fina com itálico, Inter, sálvia só decorativa, sem sombras */
+  :root{
+    --bg:#f7f1e8;        /* creme */
+    --surface:#fefaef;   /* osso */
+    --dusk:#ebe4d8;      /* faixa alternada, um tom abaixo do creme */
+    --text:#4a4741;      /* carvão */
+    --ink:#222428;       /* ônix: títulos fortes e botão escuro */
+    --muted:#6b6862;     /* 4,95:1 no creme */
+    --accent:#5b6550;    /* sálvia: linhas, marcadores, barras */
+    --border:#e2dbcf;
+    --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+    --sans:'Inter',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --gutter:clamp(16px,5vw,64px);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit}
+  em{font-style:italic}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 var(--gutter)}
+  .rotulo{font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .titulo{font-family:var(--serif);font-weight:300;font-size:clamp(40px,6vw,80px);line-height:1.04;letter-spacing:-.025em;color:var(--ink)}
+  .titulo em{font-weight:300}
+  .lead{font-size:clamp(17px,1.6vw,20px);line-height:1.55;max-width:58ch}
+  .fade-up{opacity:0;transform:translateY(24px)}
+
+  /* ─── Barra de progresso de leitura ─── */
+  .leitura{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--accent);transform-origin:0 50%;transform:scaleX(0);z-index:60}
+
+  /* ═══ 1. ABERTURA: text-mask ═══ */
+  .mask-section{position:relative;min-height:300vh}
+  .mask-sticky{position:sticky;top:0;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .mask-overlay,.mask-reveal{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 var(--gutter)}
+  .mask-text,.mask-text-filled{font-family:var(--serif);font-weight:300;font-size:clamp(64px,13.5vw,210px);line-height:.92;letter-spacing:-.035em;text-align:center}
+  .mask-text em,.mask-text-filled em{display:block}
+  .mask-text{color:transparent;-webkit-text-stroke:1px rgba(74,71,65,.28)}
+  .mask-reveal{z-index:3;clip-path:inset(100% 0 0 0)}
+  .mask-text-filled{color:var(--ink)}
+  .mask-top{position:absolute;top:28px;left:var(--gutter);right:var(--gutter);display:flex;justify-content:space-between;gap:16px;z-index:4}
+  .mask-hint{position:absolute;bottom:32px;left:0;right:0;text-align:center;z-index:4;font-size:13px;color:var(--muted);letter-spacing:.04em;animation:respira 2.4s ease-in-out infinite}
+  @keyframes respira{0%,100%{opacity:.45}50%{opacity:1}}
+  .mask-subtext{position:absolute;bottom:13%;left:0;right:0;padding:0 var(--gutter);text-align:center;opacity:0;z-index:4}
+  .mask-subtext p{font-size:clamp(17px,1.8vw,22px);color:var(--text);max-width:40ch;margin:0 auto;line-height:1.5}
+
+  /* ═══ 2. PROBLEMA: editorial ═══ */
+  .problema{padding:clamp(96px,14vh,160px) 0}
+  .problema .titulo{max-width:16ch;margin:20px 0 56px}
+  .dores{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,3vw,48px);border-top:1px solid var(--border);padding-top:40px}
+  .dor-n{font-family:var(--serif);font-style:italic;font-size:32px;color:var(--accent);line-height:1;margin-bottom:16px}
+  .dor h3{font-size:18px;font-weight:500;color:var(--ink);margin-bottom:8px}
+  .dor p{font-size:15px;color:var(--muted);max-width:34ch}
+
+  /* ═══ 3. COMO FUNCIONA: sticky-stack ═══ */
+  .stack-section,.fim{--muted:#5c5953}
+  .stack-section{background:var(--dusk);padding:clamp(96px,14vh,160px) 0 clamp(64px,10vh,120px)}
+  .stack-head{margin-bottom:56px}
+  .stack-head .titulo{margin-top:20px;max-width:18ch}
+  .stack-container{display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(32px,5vw,72px);align-items:start}
+  .stack-visual{position:sticky;top:max(48px,calc(50vh - 260px));height:fit-content}
+  .mockup{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  .mockup-bar{height:40px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:8px}
+  .mockup-dot{width:9px;height:9px;border-radius:50%;background:var(--border)}
+  .mockup-url{margin-left:12px;font-size:12px;color:var(--muted);letter-spacing:.02em}
+  .mockup-body{display:grid;min-height:440px}
+  .mockup-state{grid-area:1/1;padding:28px;display:flex;flex-direction:column;justify-content:center;gap:14px;opacity:0;transition:opacity .5s ease}
+  .mockup-state.active{opacity:1}
+  .m-label{font-size:12px;color:var(--muted);letter-spacing:.04em}
+  .m-brief{border:1px solid var(--text);border-radius:12px;padding:16px 18px;font-size:15px;color:var(--ink);line-height:1.5;background:transparent}
+  .m-brief .cursor{display:inline-block;width:1px;height:1.1em;background:var(--ink);vertical-align:-3px;margin-left:2px;animation:pisca 1s steps(1) infinite}
+  @keyframes pisca{50%{opacity:0}}
+  .m-brief-sm{font-size:13px;padding:10px 14px;color:var(--text)}
+  .m-chips-sm{gap:6px}
+  .m-chips-sm .m-chip{font-size:12px;padding:4px 11px}
+  .mockup-state[data-state="3"]{gap:10px;justify-content:flex-start}
+  .m-pill{align-self:flex-start;background:var(--ink);color:#fff;border-radius:9999px;padding:10px 22px;font-size:14px;font-weight:500}
+  .m-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .m-chip{border:1px solid var(--text);border-radius:9999px;padding:6px 14px;font-size:13px;color:var(--ink)}
+  .m-chip.verba{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .m-faixa{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--ink);line-height:1.1}
+  .m-faixa em{font-weight:300}
+  .m-card{border:1px solid var(--border);border-radius:8px;padding:12px 14px;background:var(--bg)}
+  .m-card b{display:block;font-weight:500;color:var(--ink);font-size:15px}
+  .m-card .casa{font-size:12px;color:var(--muted)}
+  .m-card .pq{font-size:13px;font-weight:500;color:var(--ink);margin-top:4px}
+  .m-cards{display:flex;flex-direction:column;gap:8px}
+  .m-acervo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .m-tray{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--border);padding-top:14px;font-size:13px}
+  .m-tray .m-pill{padding:8px 16px;font-size:13px}
+  .stack-features{display:flex;flex-direction:column;gap:clamp(40px,22vh,200px);padding:8vh 0 18vh}
+  .feature-card{padding:32px;border-radius:8px;background:var(--bg);border:1px solid var(--border);opacity:.4;transform:translateY(10px);transition:opacity .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1),border-color .4s}
+  .feature-card.active{opacity:1;transform:none;border-color:var(--text)}
+  .feature-num{font-family:var(--serif);font-style:italic;font-size:28px;color:var(--accent);line-height:1;margin-bottom:14px}
+  .feature-card h3{font-size:22px;font-weight:500;color:var(--ink);letter-spacing:-.01em;margin-bottom:10px}
+  .feature-card p{font-size:16px;color:var(--text);line-height:1.6}
+
+  /* ═══ 4. NÚMEROS: odometer ═══ */
+  .stats-section{padding:clamp(96px,14vh,160px) 0}
+  .stats-section .titulo{margin:20px 0 56px;max-width:20ch}
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border)}
+  .stat-item{padding:40px 24px 40px 0;border-bottom:1px solid var(--border)}
+  .stat-item:not(:nth-child(3n+1)){padding-left:24px;border-left:1px solid var(--border)}
+  .odometer{font-family:var(--sans);font-weight:200;font-size:clamp(48px,6vw,88px);letter-spacing:-.04em;color:var(--ink);height:1.1em;line-height:1.1;display:flex;overflow:hidden;font-variant-numeric:tabular-nums}
+  .odo-digit{display:inline-block;overflow:hidden;height:1.1em;position:relative}
+  .odo-strip{display:flex;flex-direction:column;transition:transform 1.6s cubic-bezier(.16,1,.3,1)}
+  .odo-strip span{display:block;height:1.1em;line-height:1.1}
+  .odo-sep{display:inline-block}
+  .stat-label{font-size:15px;color:var(--text);margin-top:10px;max-width:26ch}
+  .stat-label span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+  .print-num{display:none}
+
+  /* ═══ 5. COMO A IA ENTROU: horizontal-scroll ═══ */
+  .h-intro{padding:clamp(96px,14vh,160px) 0 24px;background:var(--ink);color:#e9e4da}
+  .h-intro .rotulo{color:#b9b4aa}
+  .h-intro .titulo{color:#f7f1e8;margin:20px 0 20px;max-width:18ch}
+  .h-intro .lead{color:#d6d1c7}
+  .h-scroll-section{overflow:clip;background:var(--ink)}
+  .h-scroll-sticky{position:sticky;top:0;height:100dvh;display:flex;align-items:center;overflow:hidden}
+  .h-scroll-track{display:flex;gap:24px;padding:0 var(--gutter);will-change:transform}
+  .h-card{flex-shrink:0;width:clamp(290px,34vw,460px);height:min(62vh,520px);border-radius:8px;border:1px solid #3a3c40;background:#2a2c30;color:#e9e4da;display:flex;flex-direction:column;justify-content:space-between;padding:32px}
+  .h-card-num{font-family:var(--serif);font-style:italic;font-size:56px;line-height:1;color:#a9b39b}
+  .h-card h3{font-family:var(--serif);font-weight:400;font-size:clamp(28px,2.4vw,36px);line-height:1.1;letter-spacing:-.015em;color:#f7f1e8;margin-bottom:12px}
+  .h-card p{font-size:15px;color:#d6d1c7;line-height:1.55;max-width:38ch}
+  .h-card .h-dado{margin-top:16px;padding-top:14px;border-top:1px solid #3a3c40;font-size:13px;color:#b9b4aa;letter-spacing:.02em}
+  .h-progress{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:12px;opacity:0;transition:opacity .3s;pointer-events:none}
+  .h-progress.visible{opacity:1}
+  .h-progress-bar{width:120px;height:2px;background:#3a3c40;border-radius:1px;overflow:hidden}
+  .h-progress-fill{height:100%;background:#a9b39b;width:0}
+  .h-progress-label{font-size:12px;color:#b9b4aa;letter-spacing:.08em;font-variant-numeric:tabular-nums}
+
+  /* ═══ 6. IMPACTO: flip-cards ═══ */
+  .cards-section{padding:clamp(96px,14vh,160px) 0}
+  .cards-section .titulo{margin:20px 0 16px;max-width:18ch}
+  .cards-section .dica{font-size:14px;color:var(--muted);margin-bottom:48px}
+  .flip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .flip-card{perspective:900px;height:300px;cursor:pointer;border:0;background:none;text-align:left;font:inherit;color:inherit;padding:0;display:block;width:100%}
+  .flip-card:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:8px}
+  .flip-inner{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.16,1,.3,1);transform-style:preserve-3d}
+  @media (hover:hover){.flip-card:hover .flip-inner{transform:rotateY(180deg)}}
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+  .flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:8px;display:flex;flex-direction:column;padding:28px}
+  .flip-front{background:var(--surface);border:1px solid var(--border);justify-content:space-between}
+  .flip-front .icone{width:32px;height:32px;color:var(--accent)}
+  .flip-front h3{font-family:var(--serif);font-weight:300;font-size:36px;line-height:1.05;letter-spacing:-.02em;color:var(--ink)}
+  .flip-front h3 em{font-weight:300}
+  .flip-front p{font-size:14px;color:var(--muted);margin-top:6px}
+  .flip-back{background:var(--ink);color:#e9e4da;transform:rotateY(180deg);justify-content:flex-end}
+  .flip-back h4{font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:#a9b39b;margin-bottom:12px}
+  .flip-back p{font-size:15px;line-height:1.55}
+
+  /* ═══ 7. FECHAMENTO ═══ */
+  .fim{background:var(--dusk);padding:clamp(96px,16vh,180px) 0 64px}
+  .fim .titulo{font-size:clamp(48px,8vw,120px);max-width:14ch;margin:20px 0 32px}
+  .replica{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 48px}
+  .replica span{border:1px solid var(--text);border-radius:9999px;padding:8px 16px;font-size:14px;color:var(--ink)}
+  .acoes{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;border-radius:9999px;padding:14px 28px;font-size:16px;font-weight:500;letter-spacing:.02em;text-decoration:none;transition:background .2s,color .2s}
+  .btn-escuro{background:var(--ink);color:#fff}
+  .btn-escuro:hover{background:#000}
+  .btn-fantasma{border:1px solid var(--text);color:var(--ink)}
+  .btn-fantasma:hover{background:var(--ink);color:#fff}
+  .btn svg{width:14px;height:14px}
+  .url{font-size:14px;color:var(--muted);margin-top:20px;word-break:break-all}
+  .rodape{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:96px;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);letter-spacing:.02em}
+
+  a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+  /* ─── Celular ─── */
+  @media screen and (max-width:900px){
+    .dores{grid-template-columns:1fr}
+    .stack-container{grid-template-columns:1fr}
+    .stack-visual{position:relative;top:0}
+    .stack-features{padding:24px 0 0;gap:16px}
+    .feature-card{opacity:1;transform:none}
+    .stats-grid{grid-template-columns:1fr 1fr}
+    .stat-item,.stat-item:not(:nth-child(3n+1)){padding:28px 16px 28px 0;border-left:0}
+    .stat-item:nth-child(2n){padding-left:16px;border-left:1px solid var(--border)}
+    .flip-grid{grid-template-columns:1fr}
+    .flip-card{height:240px}
+    .mockup-body{min-height:0}
+    .mockup-state{display:none}
+    .mockup-state[data-state="3"]{display:flex;opacity:1}
+  }
+  @media screen and (max-width:520px){
+    .mask-top{flex-direction:column;gap:4px}
+    .h-card{width:82vw;padding:24px}
+    .mockup-state{padding:20px}
+    .m-acervo{grid-template-columns:1fr}
+  }
+
+  /* ─── Movimento reduzido: tudo no estado final, sem sequestro de rolagem ─── */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .fade-up{opacity:1;transform:none}
+  }
+
+  /* ─── Versão PDF (impressão): um slide por tela, 16:9, sem efeitos ─── */
+  @page{size:1600px 900px;margin:0}
+  @media print{
+    html,body{background:var(--bg)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .leitura,.mask-hint,.h-progress,.dica{display:none!important}
+    .fade-up{opacity:1!important;transform:none!important}
+    .slide{break-before:page;break-inside:avoid;height:900px;min-height:0!important;padding-top:0!important;padding-bottom:0!important;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+    .wrap{width:100%;max-width:1440px}
+    .mask-section{height:900px;min-height:0;break-before:auto}
+    .mask-sticky{position:relative;height:900px}
+    .mask-overlay{display:none}
+    .mask-reveal{clip-path:none!important}
+    .mask-text-filled{font-size:190px}
+    .mask-subtext{opacity:1!important;transform:none!important;bottom:110px}
+    .stack-section .stack-container{grid-template-columns:1.15fr 1fr;gap:56px;align-items:center}
+    .stack-visual{position:relative;top:0}
+    .stack-head{margin-bottom:32px}
+    .stack-head .titulo{font-size:60px;max-width:none}
+    .stack-features{gap:12px;padding:0}
+    .feature-card{opacity:1!important;transform:none!important;padding:16px 20px;border-color:var(--border)!important}
+    .feature-num{font-size:20px;margin-bottom:6px}
+    .feature-card h3{font-size:18px;margin-bottom:4px}
+    .feature-card p{font-size:14px;line-height:1.45}
+    .mockup-state{display:none;opacity:1}
+    .mockup-state[data-state="3"]{display:flex}
+    .mockup-body{min-height:0}
+    .odometer{display:none}
+    .print-num{display:block;font-weight:200;font-size:80px;letter-spacing:-.04em;line-height:1.1;color:var(--ink);font-variant-numeric:tabular-nums}
+    .h-scroll-section{height:auto!important;background:var(--ink)}
+    .h-intro{height:auto;padding:0 0 8px!important;display:block}
+    .h-intro .titulo{font-size:52px;margin:10px 0;max-width:none}
+    .h-intro .lead{font-size:17px}
+    .h-scroll-section{padding-bottom:0}
+    .proc{break-before:page;break-inside:avoid;height:900px;overflow:hidden;background:var(--ink);display:flex;flex-direction:column;justify-content:center}
+    .h-intro,.h-scroll-section{min-height:0}
+    .h-scroll-sticky{position:relative;height:auto;display:block;overflow:visible}
+    .h-scroll-track{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;transform:none!important;padding:24px var(--gutter) 0;max-width:1440px;margin:0 auto}
+    .h-card{width:auto;height:auto;min-height:0;padding:20px 24px;gap:10px;justify-content:flex-start}
+    .h-card-num{font-size:30px}
+    .h-card h3{font-size:24px;margin-bottom:6px}
+    .h-card p{font-size:14px}
+    .flip-card{height:auto;perspective:none}
+    .flip-card{align-self:stretch}
+    .flip-inner{transform:none!important;display:grid;grid-template-rows:auto 1fr;height:100%}
+    .flip-front,.flip-back{position:relative;inset:auto;transform:none;backface-visibility:visible}
+    .flip-front{border-radius:8px 8px 0 0;border-bottom:0;padding:20px 24px 12px;gap:8px;justify-content:flex-start}
+    .flip-front .icone{display:none}
+    .flip-front h3{font-size:30px}
+    .flip-back{border-radius:0 0 8px 8px;padding:16px 24px 20px;justify-content:flex-start}
+    .flip-back h4{display:none}
+    .flip-back p{font-size:14px}
+    .cards-section .titulo{margin-bottom:32px}
+    .fim .rodape{margin-top:56px}
+  }
+</style>
+</head>
+<body>
+<div class="leitura" aria-hidden="true"></div>
+
+<!-- ═══ 1. ABERTURA ═══ -->
+<section class="mask-section slide" aria-label="Abertura">
+  <div class="mask-sticky">
+    <div class="mask-top">
+      <span class="rotulo">Concurso de IA</span>
+      <span class="rotulo">Outubro 2026</span>
+    </div>
+    <div class="mask-overlay" aria-hidden="true"><div class="mask-text">Oráculo <em>de Diretores</em></div></div>
+    <div class="mask-reveal"><h1 class="mask-text-filled">Oráculo <em>de Diretores</em></h1></div>
+    <div class="mask-subtext"><p>Curadoria de diretores de cena com IA. Você cola o roteiro e recebe os nomes certos, cada um com o porquê.</p></div>
+    <div class="mask-hint" aria-hidden="true">Role para começar</div>
+  </div>
+</section>
+
+<!-- ═══ 2. O PROBLEMA ═══ -->
+<section class="problema slide">
+  <div class="wrap">
+    <div class="rotulo fade-up">O problema</div>
+    <h2 class="titulo fade-up">Toda shortlist começa do mesmo jeito: <em>memória e abas abertas.</em></h2>
+    <div class="dores">
+      <div class="dor fade-up"><div class="dor-n">i.</div><h3>Repertório na cabeça de poucos</h3><p>Quem conhece o mercado indica os mesmos nomes de sempre. Quando essa pessoa sai, o conhecimento sai junto.</p></div>
+      <div class="dor fade-up"><div class="dor-n">ii.</div><h3>Pesquisa espalhada</h3><p>Dezenas de sites de produtora, reels, matérias e premiações, cada um num formato, nenhum ligado ao roteiro.</p></div>
+      <div class="dor fade-up"><div class="dor-n">iii.</div><h3>Sem critério escrito</h3><p>Por que esse diretor e não outro? A resposta raramente fica registrada, e a verba entra tarde na conversa.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 3. COMO FUNCIONA ═══ -->
+<section class="stack-section slide">
+  <div class="wrap">
+    <div class="stack-head">
+      <div class="rotulo fade-up">Como funciona</div>
+      <h2 class="titulo fade-up">Cole o roteiro. <em>O Oráculo lê.</em></h2>
+    </div>
+    <div class="stack-container">
+      <div class="stack-visual">
+        <div class="mockup" role="img" aria-label="Tela do Oráculo de Diretores com um briefing de cerveja e os diretores indicados">
+          <div class="mockup-bar"><div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div><span class="mockup-url">Oráculo de Diretores</span></div>
+          <div class="mockup-body">
+            <div class="mockup-state active" data-state="1">
+              <div class="m-label">Roteiro ou briefing</div>
+              <div class="m-brief">Filme de 30s para uma cerveja tipo Heineken, com humor e atores, verba de R$ 700 mil.<span class="cursor"></span></div>
+              <div class="m-pill">Consultar o Oráculo</div>
+            </div>
+            <div class="mockup-state" data-state="2">
+              <div class="m-label">O que o Oráculo entendeu</div>
+              <div class="m-chips">
+                <span class="m-chip">Humor</span><span class="m-chip">Bebidas</span><span class="m-chip">Direção de atores e celebridades</span><span class="m-chip verba">Verba: R$ 700 mil</span>
+              </div>
+              <div class="m-label" style="margin-top:12px">Também lê, quando o texto traz</div>
+              <div class="m-chips">
+                <span class="m-chip">Tom</span><span class="m-chip">Segmento</span><span class="m-chip">Elenco</span><span class="m-chip">Técnica</span><span class="m-chip">Formato</span><span class="m-chip">Marcas citadas</span>
+              </div>
+            </div>
+            <div class="mockup-state" data-state="3">
+              <div class="m-brief m-brief-sm">Filme de 30s para uma cerveja tipo Heineken, com humor e atores, verba de R$ 700 mil.</div>
+              <div class="m-chips m-chips-sm">
+                <span class="m-chip">Humor</span><span class="m-chip">Bebidas</span><span class="m-chip">Direção de atores</span><span class="m-chip verba">Verba: R$ 700 mil</span>
+              </div>
+              <div class="m-faixa" style="margin-top:6px">Os mais <em>indicados</em></div>
+              <div class="m-cards">
+                <div class="m-card"><b>Yanco Gomes</b><span class="casa">Kaus</span><div class="pq">Fez Heineken, com humor e direção de atores.</div></div>
+                <div class="m-card"><b>Thiago Vieira</b><span class="casa">Mink Collective</span><div class="pq">Fez Ambev, com humor e direção de atores.</div></div>
+                <div class="m-card"><b>Lucas Fogs</b><span class="casa">Square Pixel</span><div class="pq">Fez Brahma, com humor e direção de atores.</div></div>
+              </div>
+              <div class="m-faixa" style="margin-top:6px">Descobertas</div>
+              <div class="m-card"><b>7Tijolada</b><span class="casa">Recôncavo</span><div class="pq">Fez Brahma e Skol, com humor e direção de atores.</div></div>
+            </div>
+            <div class="mockup-state" data-state="4">
+              <div class="m-label">Acervo: 503 diretores, filtráveis por produtora, base, formato e tags</div>
+              <div class="m-acervo">
+                <div class="m-card"><b>Yanco Gomes</b><span class="casa">Kaus · São Paulo, SP</span></div>
+                <div class="m-card"><b>7Tijolada</b><span class="casa">Recôncavo · São Paulo, SP</span></div>
+                <div class="m-card"><b>Lucas Fogs</b><span class="casa">Square Pixel · Rio de Janeiro, RJ</span></div>
+                <div class="m-card"><b>Thiago Vieira</b><span class="casa">Mink Collective · São Paulo, SP</span></div>
+              </div>
+              <div class="m-tray"><span>4 na shortlist</span><span class="m-pill">Copiar shortlist</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stack-features">
+        <div class="feature-card active" data-feature="1">
+          <div class="feature-num">01</div>
+          <h3>Cole o roteiro</h3>
+          <p>Texto livre, do jeito que chegou da criação ou do cliente. Não precisa preencher formulário nem escolher categoria.</p>
+        </div>
+        <div class="feature-card" data-feature="2">
+          <div class="feature-num">02</div>
+          <h3>O Oráculo lê</h3>
+          <p>Identifica tom, segmento, elenco, técnica, formato, marcas citadas e a verba de produção. Cada leitura aparece na tela e pode ser descartada com um clique.</p>
+        </div>
+        <div class="feature-card" data-feature="3">
+          <div class="feature-num">03</div>
+          <h3>Três faixas, cada nome com o porquê</h3>
+          <p>Os mais indicados, as Descobertas (nomes em ascensão, para sair do óbvio) e os de fora do Brasil. Cada card explica a escolha, avisa se o diretor pode estar acima da verba e traz o reel.</p>
+        </div>
+        <div class="feature-card" data-feature="4">
+          <div class="feature-num">04</div>
+          <h3>Acervo e shortlist</h3>
+          <p>Todo o banco navegável com filtros. A shortlist se monta com uma estrela e sai copiada, pronta para o e-mail ou a planilha.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 4. NÚMEROS ═══ -->
+<section class="stats-section slide">
+  <div class="wrap">
+    <div class="rotulo fade-up">O banco hoje</div>
+    <h2 class="titulo fade-up">Um mercado inteiro, <em>com fonte.</em></h2>
+    <div class="stats-grid">
+      <div class="stat-item"><div class="odometer" data-value="503"></div><div class="print-num">503</div><div class="stat-label">diretores de cena<span>todos com bio e reel</span></div></div>
+      <div class="stat-item"><div class="odometer" data-value="54"></div><div class="print-num">54</div><div class="stat-label">produtoras<span>rosters conferidos um a um</span></div></div>
+      <div class="stat-item"><div class="odometer" data-value="3.301"></div><div class="print-num">3.301</div><div class="stat-label">marcas no histórico dos diretores</div></div>
+      <div class="stat-item"><div class="odometer" data-value="991"></div><div class="print-num">991</div><div class="stat-label">trabalhos catalogados</div></div>
+      <div class="stat-item"><div class="odometer" data-value="346"></div><div class="print-num">346</div><div class="stat-label">prêmios novos verificados<span>só contam com o diretor creditado</span></div></div>
+      <div class="stat-item"><div class="odometer" data-value="40"></div><div class="print-num">40</div><div class="stat-label">tags em 6 eixos<span>tom, segmento, técnica, elenco, formato e perfil</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5. COMO A IA ENTROU ═══ -->
+<div class="proc">
+<section class="h-intro">
+  <div class="wrap">
+    <div class="rotulo fade-up">Como a IA entrou</div>
+    <h2 class="titulo fade-up">A IA pesquisa e escreve. <em>A curadoria decide.</em></h2>
+    <p class="lead fade-up">Construído com o Claude (Anthropic), pelo Claude Code. Nenhuma linha de programação escrita à mão: o trabalho foi dizer o que importa e conferir o que voltava.</p>
+  </div>
+</section>
+<section class="h-scroll-section" id="hSection" aria-label="Etapas do processo">
+  <div class="h-scroll-sticky">
+    <div class="h-scroll-track" id="hTrack">
+      <article class="h-card"><div class="h-card-num">01</div><div><h3>Mapeamento</h3><p>Rosters de 54 produtoras levantados e conferidos. Quem saiu, quem entrou, quem mudou de casa.</p><div class="h-dado">Cada mudança de casa fica registrada no histórico</div></div></article>
+      <article class="h-card"><div class="h-card-num">02</div><div><h3>Auditoria em paralelo</h3><p>Agentes de IA revisaram os 504 perfis ao mesmo tempo: reel, site da casa, imprensa e premiações.</p><div class="h-dado">Toda afirmação precisa de um link; sem fonte, não entra</div></div></article>
+      <article class="h-card"><div class="h-card-num">03</div><div><h3>Prêmio só com crédito</h3><p>Prêmio da agência não conta. Só vale quando o diretor está creditado. Ciclope e D&amp;AD pesam mais no ranking.</p><div class="h-dado">346 prêmios novos confirmados; os duvidosos ficam marcados, não apagados</div></div></article>
+      <article class="h-card"><div class="h-card-num">04</div><div><h3>Curadoria humana</h3><p>Cada decisão difícil virou um card para o curador escolher, com os links ao lado. Nível de reconhecimento e gênero vêm dele, nunca de suposição.</p><div class="h-dado">Mais de 200 decisões revisadas uma a uma</div></div></article>
+      <article class="h-card"><div class="h-card-num">05</div><div><h3>Vocabulário próprio</h3><p>As 70 tags soltas viraram 40, em seis eixos. Sinônimos ligados: quem busca “cerveja” encontra quem tem repertório em bebidas.</p><div class="h-dado">Tags revisadas também a partir dos reels</div></div></article>
+      <article class="h-card"><div class="h-card-num">06</div><div><h3>Desenho e publicação</h3><p>Interface revisada com crítica de design assistida por IA. Sai uma página única, leve, sem dados internos.</p><div class="h-dado">Verba, nível e gênero orientam o ranking, mas nunca aparecem na tela</div></div></article>
+    </div>
+  </div>
+</section>
+</div>
+<div class="h-progress" id="hProgress" aria-hidden="true"><div class="h-progress-bar"><div class="h-progress-fill" id="hFill"></div></div><div class="h-progress-label" id="hLabel">1 / 6</div></div>
+
+<!-- ═══ 6. IMPACTO ═══ -->
+<section class="cards-section slide">
+  <div class="wrap">
+    <div class="rotulo fade-up">Impacto</div>
+    <h2 class="titulo fade-up">O que muda <em>na rotina.</em></h2>
+    <p class="dica fade-up">Passe o mouse ou toque para virar.</p>
+    <div class="flip-grid">
+      <button class="flip-card" type="button" aria-pressed="false"><div class="flip-inner">
+        <div class="flip-front"><svg class="icone" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M16 9v7l5 3"/></svg><div><h3><em>Tempo</em></h3><p>Da pesquisa à shortlist</p></div></div>
+        <div class="flip-back"><h4>Tempo</h4><p>A primeira lista sai em segundos, a partir do próprio roteiro. O tempo da equipe vai para conversar com as produtoras, não para abrir sites.</p></div>
+      </div></button>
+      <button class="flip-card" type="button" aria-pressed="false"><div class="flip-inner">
+        <div class="flip-front"><svg class="icone" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><circle cx="16" cy="16" r="3"/><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="13"/></svg><div><h3><em>Repertório</em></h3><p>Para além dos nomes de sempre</p></div></div>
+        <div class="flip-back"><h4>Repertório</h4><p>A faixa Descobertas põe nomes em ascensão ao lado dos consagrados, com uma ordem que varia a cada sessão. É a forma de achar o diretor que ninguém lembrou.</p></div>
+      </div></button>
+      <button class="flip-card" type="button" aria-pressed="false"><div class="flip-inner">
+        <div class="flip-front"><svg class="icone" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M5 22h22M9 22V12M16 22V7M23 22v-6"/></svg><div><h3><em>Verba</em></h3><p>Proposta compatível desde o início</p></div></div>
+        <div class="flip-back"><h4>Verba</h4><p>O valor citado no briefing entra no ranking. Quem costuma trabalhar acima da faixa desce e recebe um aviso, sem expor a faixa de ninguém.</p></div>
+      </div></button>
+      <button class="flip-card" type="button" aria-pressed="false"><div class="flip-inner">
+        <div class="flip-front"><svg class="icone" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M7 16l6 6 12-13"/></svg><div><h3><em>Confiança</em></h3><p>Informação com fonte</p></div></div>
+        <div class="flip-back"><h4>Confiança</h4><p>Nada inventado: marca, prêmio e trabalho só entram com link. O que não se confirmou fica marcado como tal, em vez de sumir.</p></div>
+      </div></button>
+      <button class="flip-card" type="button" aria-pressed="false"><div class="flip-inner">
+        <div class="flip-front"><svg class="icone" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M6 9h20v16H6zM11 9V6h10v3"/></svg><div><h3><em>Memória</em> da casa</h3><p>Conhecimento que fica</p></div></div>
+        <div class="flip-back"><h4>Memória da casa</h4><p>O critério da curadoria fica escrito no banco, não só na cabeça de quem conhece o mercado. Qualquer pessoa da equipe chega ao mesmo ponto de partida.</p></div>
+      </div></button>
+      <button class="flip-card" type="button" aria-pressed="false"><div class="flip-inner">
+        <div class="flip-front"><svg class="icone" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M10 6h12v6H10zM4 20h10v6H4zM18 20h10v6H18zM16 12v4M9 20v-4h14v4"/></svg><div><h3><em>Escala</em></h3><p>Método replicável</p></div></div>
+        <div class="flip-back"><h4>Escala</h4><p>O mesmo método serve para qualquer fornecedor que hoje se escolhe de memória. O próximo pode sair em semanas, não em meses.</p></div>
+      </div></button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 7. FECHAMENTO ═══ -->
+<section class="fim slide">
+  <div class="wrap">
+    <div class="rotulo fade-up">Próximos passos</div>
+    <h2 class="titulo fade-up">O mesmo oráculo, <em>para outras escolhas.</em></h2>
+    <p class="lead fade-up">Banco com fonte, vocabulário controlado, IA para pesquisar e curadoria humana para decidir. A receita vale para:</p>
+    <div class="replica fade-up"><span>Diretores de fotografia</span><span>Casting</span><span>Produtoras de som</span><span>Pós-produção</span><span>Locações</span><span>Fornecedores de produção</span></div>
+    <div class="acoes fade-up">
+      <a class="btn btn-escuro" href="https://ianzik.github.io/oraculo-diretores-site/" target="_blank" rel="noopener">Abrir o Oráculo <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <p class="url fade-up">ianzik.github.io/oraculo-diretores-site</p>
+    <div class="rodape"><span>Oráculo de Diretores · Concurso Mensal de IA Aplicado na Prática, outubro de 2026</span><span>Feito com Claude Code</span></div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var temGsap = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+
+  // Odômetro: monta as tiras de dígitos (pontos de milhar ficam fixos)
+  document.querySelectorAll('.odometer').forEach(function(odo){
+    var val = odo.dataset.value; odo.innerHTML = ''; odo.setAttribute('aria-label', val);
+    val.split('').forEach(function(ch){
+      if (!/\d/.test(ch)) { var s = document.createElement('span'); s.className = 'odo-sep'; s.textContent = ch; s.setAttribute('aria-hidden','true'); odo.appendChild(s); return; }
+      var dg = document.createElement('div'); dg.className = 'odo-digit'; dg.dataset.alvo = ch; dg.setAttribute('aria-hidden','true');
+      var st = document.createElement('div'); st.className = 'odo-strip';
+      for (var i = 0; i <= 9; i++) { var n = document.createElement('span'); n.textContent = i; st.appendChild(n); }
+      dg.appendChild(st); odo.appendChild(dg);
+    });
+  });
+  function giraOdometro(odo){
+    odo.querySelectorAll('.odo-digit').forEach(function(dg, i){
+      var st = dg.firstChild, h = st.children[0].offsetHeight;
+      st.style.transitionDelay = (i * 0.12) + 's';
+      st.style.transform = 'translateY(-' + (parseInt(dg.dataset.alvo, 10) * h) + 'px)';
+    });
+  }
+
+  // Cartões que viram: clique/toque/teclado (o hover já vira no desktop)
+  document.querySelectorAll('.flip-card').forEach(function(c){
+    c.addEventListener('click', function(){ var on = c.classList.toggle('flipped'); c.setAttribute('aria-pressed', on); });
+  });
+
+  // Como funciona: o cartão ativo troca a tela do mockup
+  var cards = document.querySelectorAll('.feature-card'), states = document.querySelectorAll('.mockup-state');
+  function ativa(n){
+    cards.forEach(function(c){ c.classList.toggle('active', c.dataset.feature === n); });
+    states.forEach(function(s){ s.classList.toggle('active', s.dataset.state === n); });
+  }
+
+  if (!temGsap || reduz) {
+    // Sem animação: tudo no estado final, galeria horizontal vira grade
+    document.querySelectorAll('.mask-reveal').forEach(function(el){ el.style.clipPath = 'none'; });
+    document.querySelectorAll('.mask-overlay').forEach(function(el){ el.style.display = 'none'; });
+    document.querySelectorAll('.mask-subtext').forEach(function(el){ el.style.opacity = 1; });
+    document.querySelector('.mask-section').style.minHeight = '100dvh';
+    document.querySelector('.mask-hint').style.display = 'none';
+    document.querySelectorAll('.fade-up').forEach(function(el){ el.style.opacity = 1; el.style.transform = 'none'; });
+    document.querySelectorAll('.odometer').forEach(function(o){ o.querySelectorAll('.odo-strip').forEach(function(s){ s.style.transition = 'none'; }); giraOdometro(o); });
+    var hs = document.getElementById('hSection'), tr = document.getElementById('hTrack');
+    hs.style.padding = '0 0 96px'; hs.querySelector('.h-scroll-sticky').style.cssText = 'position:relative;height:auto;display:block';
+    tr.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;max-width:1280px;margin:0 auto';
+    tr.querySelectorAll('.h-card').forEach(function(c){ c.style.width = 'auto'; c.style.height = 'auto'; c.style.minHeight = '320px'; });
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) ativa(e.target.dataset.feature); }); }, { rootMargin: '-45% 0px -45% 0px' });
+      cards.forEach(function(c){ io.observe(c); });
+    }
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Barra de leitura no topo
+  gsap.to('.leitura', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.2 } });
+
+  // 1. Abertura: o título vazado se preenche ao rolar
+  var mask = document.querySelector('.mask-section');
+  gsap.to('.mask-reveal', { clipPath: 'inset(0% 0 0 0)', ease: 'none', scrollTrigger: { trigger: mask, start: 'top top', end: '60% bottom', scrub: 0.3 } });
+  gsap.to('.mask-hint', { opacity: 0, scrollTrigger: { trigger: mask, start: 'top top', end: '8% top', scrub: true } });
+  gsap.fromTo('.mask-subtext', { opacity: 0, y: 16 }, { opacity: 1, y: 0, scrollTrigger: { trigger: mask, start: '50% top', end: '65% top', scrub: true } });
+
+  // Entradas suaves
+  gsap.utils.toArray('.fade-up').forEach(function(el){
+    gsap.to(el, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+  });
+
+  // 3. Como funciona
+  cards.forEach(function(card){
+    ScrollTrigger.create({ trigger: card, start: 'top 60%', end: 'bottom 40%',
+      onEnter: function(){ ativa(card.dataset.feature); }, onEnterBack: function(){ ativa(card.dataset.feature); } });
+  });
+
+  // 4. Números
+  document.querySelectorAll('.odometer').forEach(function(o){
+    ScrollTrigger.create({ trigger: o, start: 'top 85%', once: true, onEnter: function(){ giraOdometro(o); } });
+  });
+
+  // 5. Galeria horizontal do processo
+  var track = document.getElementById('hTrack'), section = document.getElementById('hSection');
+  var total = track.querySelectorAll('.h-card').length;
+  var prog = document.getElementById('hProgress'), fill = document.getElementById('hFill'), label = document.getElementById('hLabel');
+  section.style.height = (total * 80) + 'vh';
+  gsap.to(track, {
+    x: function(){ return -Math.max(0, track.scrollWidth - window.innerWidth); }, ease: 'none',
+    scrollTrigger: { trigger: section, start: 'top top', end: 'bottom bottom', scrub: 0.5, invalidateOnRefresh: true,
+      onUpdate: function(s){ fill.style.width = (s.progress * 100) + '%'; label.textContent = Math.min(Math.ceil(s.progress * total + 0.5), total) + ' / ' + total; },
+      onToggle: function(s){ prog.classList.toggle('visible', s.isActive); } }
+  });
+
+  window.addEventListener('load', function(){ ScrollTrigger.refresh(); });
+  // Na impressão, tudo no estado final
+  window.addEventListener('beforeprint', function(){ document.querySelectorAll('.odometer').forEach(giraOdometro); });
+})();
+</script>
+</body>
+</html>
