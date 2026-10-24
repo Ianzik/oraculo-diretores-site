@@ -55,6 +55,25 @@
   .mask-subtext{position:absolute;bottom:13%;left:0;right:0;padding:0 var(--gutter);text-align:center;opacity:0;z-index:4}
   .mask-subtext p{font-size:clamp(17px,1.8vw,22px);color:var(--text);max-width:40ch;margin:0 auto;line-height:1.5}
 
+  /* ═══ 1b. ORIGEM: a planilha do estagiário ═══ */
+  .origem{padding:clamp(96px,14vh,160px) 0}
+  .origem .titulo{max-width:17ch;margin:20px 0 28px}
+  .origem-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:clamp(32px,5vw,72px);align-items:center}
+  .origem .lead + .lead{margin-top:16px}
+  .origem .virada{font-family:var(--serif);font-size:clamp(24px,2.4vw,32px);line-height:1.2;color:var(--ink);margin-top:28px;max-width:26ch}
+  .planilha{border:1px solid var(--border);border-radius:8px;background:var(--surface);overflow:hidden;font-size:13px}
+  .planilha-bar{display:flex;align-items:center;gap:10px;height:36px;padding:0 14px;border-bottom:1px solid var(--border);color:var(--muted);font-size:12px}
+  .planilha-bar b{font-weight:500;color:var(--text)}
+  .planilha-tab{display:grid;grid-template-columns:32px repeat(7,minmax(0,1fr))}
+  .planilha-tab > div{border-right:1px solid var(--border);border-bottom:1px solid var(--border);height:34px;padding:0 8px;display:flex;align-items:center;overflow:hidden;white-space:nowrap}
+  .planilha-tab > div:nth-child(8n){border-right:0}
+  .planilha-tab .cab{font-weight:500;color:var(--ink);background:var(--dusk);font-size:12px}
+  .planilha-tab .n{color:var(--muted);justify-content:center;background:var(--dusk);font-size:11px;padding:0}
+  .planilha-tab .linha::after{content:"";display:block;height:6px;width:70%;border-radius:3px;background:var(--border)}
+  .planilha-tab .linha.c::after{width:45%}
+  .planilha-tab .linha.l::after{width:90%}
+  .planilha-fontes{padding:12px 14px;color:var(--muted);font-size:12px}
+
   /* ═══ 2. PROBLEMA: editorial ═══ */
   .problema{padding:clamp(96px,14vh,160px) 0}
   .problema .titulo{max-width:16ch;margin:20px 0 56px}
@@ -140,6 +159,25 @@
   .h-progress-fill{height:100%;background:#a9b39b;width:0}
   .h-progress-label{font-size:12px;color:#b9b4aa;letter-spacing:.08em;font-variant-numeric:tabular-nums}
 
+  /* ═══ 5b. BANCO VIVO: atualização automática ═══ */
+  .vivo{padding:clamp(96px,14vh,160px) 0}
+  .vivo .titulo{margin:20px 0 20px;max-width:17ch}
+  .vivo .lead{margin-bottom:48px}
+  .fluxo{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid var(--border);counter-reset:passo}
+  .passo{position:relative;padding:28px 20px 28px 0}
+  .passo + .passo{padding-left:20px;border-left:1px solid var(--border)}
+  .passo-n{font-family:var(--serif);font-style:italic;font-size:28px;color:var(--accent);line-height:1;margin-bottom:12px}
+  .passo h3{font-size:17px;font-weight:500;color:var(--ink);margin-bottom:6px;line-height:1.3}
+  .passo p{font-size:14px;color:var(--muted);line-height:1.5}
+  .passo.humano{background:var(--surface);border:1px solid var(--text);border-radius:8px;padding:20px;margin:8px 0 8px 12px}
+  .passo.humano + .passo{border-left:0}
+  .rodada{margin-top:56px;border:1px solid var(--border);border-radius:8px;background:var(--surface);padding:28px 32px;display:grid;grid-template-columns:1.1fr repeat(4,1fr);gap:24px;align-items:end}
+  .rodada-tit{font-family:var(--serif);font-size:26px;line-height:1.15;color:var(--ink)}
+  .rodada-tit span{display:block;font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:6px;letter-spacing:.01em}
+  .rodada-num{font-weight:200;font-size:clamp(40px,4vw,56px);letter-spacing:-.04em;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+  .rodada-num small{font-size:.5em;letter-spacing:-.02em}
+  .rodada-lab{font-size:14px;color:var(--text);margin-top:8px}
+
   /* ═══ 6. IMPACTO: flip-cards ═══ */
   .cards-section{padding:clamp(96px,14vh,160px) 0}
   .cards-section .titulo{margin:20px 0 16px;max-width:18ch}
@@ -160,9 +198,24 @@
   .flip-back h4{font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:#a9b39b;margin-bottom:12px}
   .flip-back p{font-size:15px;line-height:1.55}
 
-  /* ═══ 7. FECHAMENTO ═══ */
-  .fim{background:var(--dusk);padding:clamp(96px,16vh,180px) 0 64px}
-  .fim .titulo{font-size:clamp(48px,8vw,120px);max-width:14ch;margin:20px 0 32px}
+  /* ═══ 6b. QUEM GANHA ═══ */
+  .ganha{padding:clamp(96px,14vh,160px) 0;background:var(--dusk);--muted:#5c5953}
+  .ganha .titulo{max-width:16ch;margin:20px 0 56px}
+  .ganha .dores{border-top-color:#d6cfc2}
+  .neutro{margin-top:48px;font-family:var(--serif);font-size:clamp(24px,2.4vw,32px);line-height:1.25;color:var(--ink);max-width:36ch}
+  .neutro em{font-weight:300}
+
+  /* ═══ 7. PRÓXIMOS PASSOS ═══ */
+  .replica-section{padding:clamp(96px,14vh,160px) 0}
+  .replica-section .titulo{max-width:14ch;margin:20px 0 32px}
+
+  /* ═══ 8. FECHAMENTO ═══ */
+  .fim{background:var(--dusk);padding:clamp(96px,14vh,160px) 0 64px}
+  .fim .titulo{font-size:clamp(48px,7vw,104px);max-width:16ch;margin:20px 0 32px}
+  .depoimento{font-family:var(--serif);font-style:italic;font-size:clamp(22px,2vw,28px);line-height:1.25;color:var(--ink);border-left:1px solid var(--accent);padding-left:20px;margin:0 0 40px;max-width:40ch}
+  .depoimento cite{display:block;font-family:var(--sans);font-style:normal;font-size:13px;color:var(--muted);margin-top:8px}
+  .fecho{font-family:var(--serif);font-weight:300;font-size:clamp(24px,2.4vw,32px);line-height:1.25;color:var(--ink);max-width:40ch;margin:0 0 28px}
+  .fecho em{font-weight:300}
   .replica{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 48px}
   .replica span{border:1px solid var(--text);border-radius:9999px;padding:8px 16px;font-size:14px;color:var(--ink)}
   .acoes{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
@@ -192,8 +245,16 @@
     .mockup-body{min-height:0}
     .mockup-state{display:none}
     .mockup-state[data-state="3"]{display:flex;opacity:1}
+    .origem-grid{grid-template-columns:1fr}
+    .fluxo{grid-template-columns:1fr}
+    .passo,.passo + .passo{padding:20px 0;border-left:0;border-bottom:1px solid var(--border)}
+    .passo.humano{margin:12px 0 0;padding:20px}
+    .rodada{grid-template-columns:1fr 1fr;padding:24px}
+    .rodada-tit{grid-column:1/-1}
   }
   @media screen and (max-width:520px){
+    .planilha{overflow-x:auto}
+    .planilha-tab{min-width:620px}
     .mask-top{flex-direction:column;gap:4px}
     .h-card{width:82vw;padding:24px}
     .mockup-state{padding:20px}
@@ -242,7 +303,7 @@
     .proc{break-before:page;break-inside:avoid;height:900px;overflow:hidden;background:var(--ink);display:flex;flex-direction:column;justify-content:center}
     .h-intro,.h-scroll-section{min-height:0}
     .h-scroll-sticky{position:relative;height:auto;display:block;overflow:visible}
-    .h-scroll-track{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;transform:none!important;padding:24px var(--gutter) 0;max-width:1440px;margin:0 auto}
+    .h-scroll-track{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;transform:none!important;padding:24px var(--gutter) 0;max-width:1440px;margin:0 auto}
     .h-card{width:auto;height:auto;min-height:0;padding:20px 24px;gap:10px;justify-content:flex-start}
     .h-card-num{font-size:30px}
     .h-card h3{font-size:24px;margin-bottom:6px}
@@ -258,7 +319,16 @@
     .flip-back h4{display:none}
     .flip-back p{font-size:14px}
     .cards-section .titulo{margin-bottom:32px}
-    .fim .rodape{margin-top:56px}
+    .vivo .titulo{font-size:64px;max-width:none;margin:12px 0}
+    .vivo .lead{margin-bottom:28px;max-width:80ch}
+    .passo{padding-top:20px;padding-bottom:20px}
+    .rodada{margin-top:28px;padding:20px 28px}
+    .ganha .titulo{margin-bottom:40px}
+    .fim .titulo{font-size:96px;margin:12px 0 28px}
+    .depoimento{margin-bottom:28px}
+    .fecho{font-size:26px;margin-bottom:20px}
+    .fim .url{margin-top:12px}
+    .fim .rodape{margin-top:32px}
   }
 </style>
 </head>
@@ -269,7 +339,7 @@
 <section class="mask-section slide" aria-label="Abertura">
   <div class="mask-sticky">
     <div class="mask-top">
-      <span class="rotulo">Concurso de IA</span>
+      <span class="rotulo">Concurso de IA · Categoria Evolução</span>
       <span class="rotulo">Outubro 2026</span>
     </div>
     <div class="mask-overlay" aria-hidden="true"><div class="mask-text">Oráculo <em>de Diretores</em></div></div>
@@ -279,11 +349,30 @@
   </div>
 </section>
 
+
+<!-- ═══ 1b. ONDE COMEÇOU ═══ -->
+<section class="origem slide">
+  <div class="wrap origem-grid">
+    <div>
+      <div class="rotulo fade-up">Onde começou</div>
+      <h2 class="titulo fade-up">Há quinze anos, <em>uma planilha de estagiário.</em></h2>
+      <p class="lead fade-up">Repertório era o que mais se valorizava num produtor. Para construir o meu, todo filme divulgado na imprensa do mercado virava uma linha. Quando chegava um roteiro, eu filtrava a planilha para lembrar de mais nomes.</p>
+      <p class="lead fade-up">Funcionava. Mas era braçal, só eu usava e envelhecia toda semana.</p>
+      <p class="virada fade-up">O Oráculo é essa planilha, construída e mantida por IA, aberta para a equipe inteira.</p>
+    </div>
+    <div class="planilha fade-up" role="img" aria-label="Planilha com as colunas diretor, produtora, diretor de fotografia, produtora de som, cliente, link e tags">
+      <div class="planilha-bar"><b>repertorio.xlsx</b><span>Filmes catalogados à mão</span></div>
+      <div class="planilha-tab"><div class="cab n"></div><div class="cab">Diretor</div><div class="cab">Produtora</div><div class="cab">Fotografia</div><div class="cab">Som</div><div class="cab">Cliente</div><div class="cab">Link</div><div class="cab">Tags</div><div class="n">2</div><div class="linha "></div><div class="linha c"></div><div class="linha l"></div><div class="linha "></div><div class="linha c"></div><div class="linha l"></div><div class="linha "></div><div class="n">3</div><div class="linha l"></div><div class="linha "></div><div class="linha c"></div><div class="linha l"></div><div class="linha "></div><div class="linha c"></div><div class="linha l"></div><div class="n">4</div><div class="linha c"></div><div class="linha l"></div><div class="linha "></div><div class="linha c"></div><div class="linha l"></div><div class="linha "></div><div class="linha "></div><div class="n">5</div><div class="linha "></div><div class="linha c"></div><div class="linha l"></div><div class="linha "></div><div class="linha "></div><div class="linha l"></div><div class="linha c"></div></div>
+      <div class="planilha-fontes">Fontes: Clube de Criação, Meio &amp; Mensagem, Propmark</div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ 2. O PROBLEMA ═══ -->
 <section class="problema slide">
   <div class="wrap">
-    <div class="rotulo fade-up">O problema</div>
-    <h2 class="titulo fade-up">Toda shortlist começa do mesmo jeito: <em>memória e abas abertas.</em></h2>
+    <div class="rotulo fade-up">O problema hoje</div>
+    <h2 class="titulo fade-up">Quinze anos depois, a shortlist ainda nasce de <em>memória e abas abertas.</em></h2>
     <div class="dores">
       <div class="dor fade-up"><div class="dor-n">i.</div><h3>Repertório na cabeça de poucos</h3><p>Quem conhece o mercado indica os mesmos nomes de sempre. Quando essa pessoa sai, o conhecimento sai junto.</p></div>
       <div class="dor fade-up"><div class="dor-n">ii.</div><h3>Pesquisa espalhada</h3><p>Dezenas de sites de produtora, reels, matérias e premiações, cada um num formato, nenhum ligado ao roteiro.</p></div>
@@ -301,18 +390,18 @@
     </div>
     <div class="stack-container">
       <div class="stack-visual">
-        <div class="mockup" role="img" aria-label="Tela do Oráculo de Diretores com um briefing de cerveja e os diretores indicados">
+        <div class="mockup" role="img" aria-label="Tela do Oráculo de Diretores com um briefing de cerveja premium e os diretores indicados">
           <div class="mockup-bar"><div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div><span class="mockup-url">Oráculo de Diretores</span></div>
           <div class="mockup-body">
             <div class="mockup-state active" data-state="1">
               <div class="m-label">Roteiro ou briefing</div>
-              <div class="m-brief">Filme de 30s para uma cerveja tipo Heineken, com humor e atores, verba de R$ 700 mil.<span class="cursor"></span></div>
+              <div class="m-brief">Filme de 30 segundos para uma cerveja premium, com humor, atores e uma celebridade. Verba de R$ 800 mil.<span class="cursor"></span></div>
               <div class="m-pill">Consultar o Oráculo</div>
             </div>
             <div class="mockup-state" data-state="2">
               <div class="m-label">O que o Oráculo entendeu</div>
               <div class="m-chips">
-                <span class="m-chip">Humor</span><span class="m-chip">Bebidas</span><span class="m-chip">Direção de atores e celebridades</span><span class="m-chip verba">Verba: R$ 700 mil</span>
+                <span class="m-chip">Humor</span><span class="m-chip">Bebidas</span><span class="m-chip">Direção de atores e celebridades</span><span class="m-chip verba">Verba: R$ 800 mil</span>
               </div>
               <div class="m-label" style="margin-top:12px">Também lê, quando o texto traz</div>
               <div class="m-chips">
@@ -320,9 +409,9 @@
               </div>
             </div>
             <div class="mockup-state" data-state="3">
-              <div class="m-brief m-brief-sm">Filme de 30s para uma cerveja tipo Heineken, com humor e atores, verba de R$ 700 mil.</div>
+              <div class="m-brief m-brief-sm">Filme de 30 segundos para uma cerveja premium, com humor, atores e uma celebridade. Verba de R$ 800 mil.</div>
               <div class="m-chips m-chips-sm">
-                <span class="m-chip">Humor</span><span class="m-chip">Bebidas</span><span class="m-chip">Direção de atores</span><span class="m-chip verba">Verba: R$ 700 mil</span>
+                <span class="m-chip">Humor</span><span class="m-chip">Bebidas</span><span class="m-chip">Direção de atores</span><span class="m-chip verba">Verba: R$ 800 mil</span>
               </div>
               <div class="m-faixa" style="margin-top:6px">Os mais <em>indicados</em></div>
               <div class="m-cards">
@@ -400,17 +489,42 @@
 <section class="h-scroll-section" id="hSection" aria-label="Etapas do processo">
   <div class="h-scroll-sticky">
     <div class="h-scroll-track" id="hTrack">
-      <article class="h-card"><div class="h-card-num">01</div><div><h3>Mapeamento</h3><p>Rosters de 59 produtoras levantados e conferidos. Toda segunda, uma varredura automática da imprensa traz quem saiu, quem entrou e quem mudou de casa.</p><div class="h-dado">Cada mudança de casa fica registrada no histórico</div></div></article>
+      <article class="h-card"><div class="h-card-num">01</div><div><h3>Mapeamento</h3><p>Rosters de 59 produtoras levantados e conferidos um a um, com site da casa, reel e imprensa de cada diretor.</p><div class="h-dado">Cada mudança de casa fica registrada no histórico</div></div></article>
       <article class="h-card"><div class="h-card-num">02</div><div><h3>Auditoria em paralelo</h3><p>Agentes de IA revisaram os 504 perfis ao mesmo tempo: reel, site da casa, imprensa e premiações.</p><div class="h-dado">Toda afirmação precisa de um link; sem fonte, não entra</div></div></article>
       <article class="h-card"><div class="h-card-num">03</div><div><h3>Prêmio só com crédito</h3><p>Prêmio da agência não conta. Só vale quando o diretor está creditado. Ciclope e D&amp;AD pesam mais no ranking.</p><div class="h-dado">346 prêmios novos confirmados; os duvidosos ficam marcados, não apagados</div></div></article>
       <article class="h-card"><div class="h-card-num">04</div><div><h3>Curadoria humana</h3><p>Cada decisão difícil virou um card para o curador escolher, com os links ao lado. Nível de reconhecimento e gênero vêm dele, nunca de suposição.</p><div class="h-dado">Mais de 200 decisões revisadas uma a uma</div></div></article>
-      <article class="h-card"><div class="h-card-num">05</div><div><h3>Vocabulário próprio</h3><p>As 70 tags soltas viraram 40, em seis eixos. Sinônimos ligados: quem busca “cerveja” encontra quem tem repertório em bebidas.</p><div class="h-dado">Tags revisadas também a partir dos reels</div></div></article>
-      <article class="h-card"><div class="h-card-num">06</div><div><h3>Desenho e publicação</h3><p>Interface revisada com crítica de design assistida por IA. Sai uma página única, leve, sem dados internos.</p><div class="h-dado">Verba, nível e gênero orientam o ranking, mas nunca aparecem na tela</div></div></article>
+      <article class="h-card"><div class="h-card-num">05</div><div><h3>A IA fica no banco, não no briefing</h3><p>A consulta roda no navegador, sem chamar nenhuma IA externa. O roteiro do cliente não sai do computador de quem consulta.</p><div class="h-dado">Sem custo por consulta e sem servidor</div></div></article>
+      <article class="h-card"><div class="h-card-num">06</div><div><h3>Vocabulário próprio</h3><p>As 70 tags soltas viraram 40, em seis eixos. Sinônimos ligados: quem busca “cerveja” encontra quem tem repertório em bebidas.</p><div class="h-dado">Tags revisadas também a partir dos reels</div></div></article>
+      <article class="h-card"><div class="h-card-num">07</div><div><h3>Desenho e publicação</h3><p>Interface revisada com crítica de design assistida por IA. Sai uma página única, leve, sem dados internos.</p><div class="h-dado">Verba, nível e gênero orientam o ranking, mas nunca aparecem na tela</div></div></article>
     </div>
   </div>
 </section>
 </div>
-<div class="h-progress" id="hProgress" aria-hidden="true"><div class="h-progress-bar"><div class="h-progress-fill" id="hFill"></div></div><div class="h-progress-label" id="hLabel">1 / 6</div></div>
+<div class="h-progress" id="hProgress" aria-hidden="true"><div class="h-progress-bar"><div class="h-progress-fill" id="hFill"></div></div><div class="h-progress-label" id="hLabel">1 / 7</div></div>
+
+
+<!-- ═══ 5b. BANCO VIVO ═══ -->
+<section class="vivo slide">
+  <div class="wrap">
+    <div class="rotulo fade-up">Atualização automática</div>
+    <h2 class="titulo fade-up">Toda segunda, 7h47, <em>o banco se atualiza.</em></h2>
+    <p class="lead fade-up">A planilha envelhecia toda semana. O Oráculo, não: uma rotina automática lê a imprensa do mercado, cruza com o banco e prepara as mudanças. A IA pesquisa; a curadoria aprova antes de qualquer coisa ir ao ar.</p>
+    <div class="fluxo">
+      <div class="passo fade-up"><div class="passo-n">01</div><h3>Lê a imprensa</h3><p>Clube de Criação, Grandes Nomes da Propaganda e Meio &amp; Mensagem Gente, matéria por matéria.</p></div>
+      <div class="passo fade-up"><div class="passo-n">02</div><h3>Cruza com o banco</h3><p>Procura cada diretor e produtora citados: quem mudou de casa, fez filme novo, abriu ou fechou.</p></div>
+      <div class="passo fade-up"><div class="passo-n">03</div><h3>Aplica o que tem fonte</h3><p>Quem já está no banco ganha a marca, o trabalho ou a casa nova, sempre com o link da matéria.</p></div>
+      <div class="passo fade-up"><div class="passo-n">04</div><h3>Separa o que é decisão</h3><p>Diretor novo, produtora nova e caso ambíguo viram pendência, com as fontes ao lado.</p></div>
+      <div class="passo humano fade-up"><div class="passo-n">05</div><h3>A curadoria aprova</h3><p>Tudo chega como proposta de revisão. Nada é publicado sem o aval do curador.</p></div>
+    </div>
+    <div class="rodada fade-up">
+      <div class="rodada-tit">Primeira rodada<span>notícias de 28/09 a 23/10/2026</span></div>
+      <div><div class="rodada-num"><small>~</small>40</div><div class="rodada-lab">matérias lidas uma a uma</div></div>
+      <div><div class="rodada-num">19</div><div class="rodada-lab">diretores novos no banco</div></div>
+      <div><div class="rodada-num">5</div><div class="rodada-lab">produtoras novas</div></div>
+      <div><div class="rodada-num">522</div><div class="rodada-lab">diretores, todos com reel</div></div>
+    </div>
+  </div>
+</section>
 
 <!-- ═══ 6. IMPACTO ═══ -->
 <section class="cards-section slide">
@@ -447,18 +561,43 @@
   </div>
 </section>
 
-<!-- ═══ 7. FECHAMENTO ═══ -->
+
+<!-- ═══ 6b. QUEM GANHA ═══ -->
+<section class="ganha slide">
+  <div class="wrap">
+    <div class="rotulo fade-up">Quem ganha</div>
+    <h2 class="titulo fade-up">Repertório que <em>não sai pela porta.</em></h2>
+    <div class="dores">
+      <div class="dor fade-up"><div class="dor-n">i.</div><h3>RTV e produção de agência</h3><p>Shortlist em minutos, a partir do próprio roteiro, e fora do círculo dos nomes de sempre.</p></div>
+      <div class="dor fade-up"><div class="dor-n">ii.</div><h3>A casa de produção própria</h3><p>Sem diretores fixos, precisa achar o diretor certo a cada job. O Oráculo é o repertório de quem dá para contratar.</p></div>
+      <div class="dor fade-up"><div class="dor-n">iii.</div><h3>A empresa</h3><p>O critério para de morar na cabeça de poucos. Quando alguém sai, o repertório fica.</p></div>
+    </div>
+    <p class="neutro fade-up">E é neutro: <em>nenhuma produtora paga para aparecer.</em> É isso que faz a indicação valer.</p>
+  </div>
+</section>
+
+<!-- ═══ 7. PRÓXIMOS PASSOS ═══ -->
+<section class="replica-section slide">
+  <div class="wrap">
+    <div class="rotulo fade-up">Escala</div>
+    <h2 class="titulo fade-up">O mesmo oráculo, <em>para outras escolhas.</em></h2>
+    <p class="lead fade-up">Banco com fonte, vocabulário controlado, IA para pesquisar e manter, gente para decidir. A planilha de estagiário já tinha fotografia e som. A receita vale para:</p>
+    <div class="replica fade-up"><span>Diretores de fotografia</span><span>Casting</span><span>Produtoras de som</span><span>Pós-produção</span><span>Locações</span><span>Fornecedores de produção</span></div>
+  </div>
+</section>
+
+<!-- ═══ 8. FECHAMENTO ═══ -->
 <section class="fim slide">
   <div class="wrap">
-    <div class="rotulo fade-up">Próximos passos</div>
-    <h2 class="titulo fade-up">O mesmo oráculo, <em>para outras escolhas.</em></h2>
-    <p class="lead fade-up">Banco com fonte, vocabulário controlado, IA para pesquisar e curadoria humana para decidir. A receita vale para:</p>
-    <div class="replica fade-up"><span>Diretores de fotografia</span><span>Casting</span><span>Produtoras de som</span><span>Pós-produção</span><span>Locações</span><span>Fornecedores de produção</span></div>
+    <div class="rotulo fade-up">Fechamento</div>
+    <h2 class="titulo fade-up">Quinze anos atrás, uma planilha. <em>Hoje, um oráculo.</em></h2>
+    <p class="fecho fade-up">A planilha que eu fazia para lembrar de mais nomes virou uma ferramenta que qualquer pessoa aqui pode abrir agora.</p>
+    <blockquote class="depoimento fade-up">“Ele me sugere os nomes e eu vou lembrando.”<cite>Colega, gerente de produção</cite></blockquote>
     <div class="acoes fade-up">
       <a class="btn btn-escuro" href="https://ianzik.github.io/oraculo-diretores-site/" target="_blank" rel="noopener">Abrir o Oráculo <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
     <p class="url fade-up">ianzik.github.io/oraculo-diretores-site</p>
-    <div class="rodape"><span>Oráculo de Diretores · Concurso Mensal de IA Aplicado na Prática, outubro de 2026</span><span>Feito com Claude Code</span></div>
+    <div class="rodape"><span>Oráculo de Diretores · Concurso Mensal de IA Aplicado na Prática, outubro de 2026 · Categoria Evolução</span><span>Feito com Claude Code</span></div>
   </div>
 </section>
 
