@@ -290,6 +290,42 @@ dialog.copia textarea{min-height:180px;font-size:14px}
 @media(max-width:820px) and (prefers-reduced-motion:reduce){.osheet,body.ofil .osheet{transition:none}.drawer.open .panel,.drawer.open{animation:none}}
 @media(prefers-reduced-motion:reduce){.drawer.open .panel,.drawer.open{animation:none}}
 @media(pointer:coarse){.navb{width:44px;height:44px}}
+/* celular, 2ª rodada (09/11/2026): sem barra de cima (o título do hero já nomeia o app), espaços mais curtos para o campo e os botões caberem na primeira tela */
+@media(max-width:820px){
+  body{padding-top:env(safe-area-inset-top,0px)}
+  .top{height:0;padding:0;border:0;background:none}
+  .wm{display:none}
+  .hero{gap:12px;padding:var(--s24) 0 var(--s16)}
+  h1{font-size:48px}
+  .sub{margin-top:8px}
+  .lead{font-size:16px}
+  .dash{margin:0 0 var(--s16)}
+  textarea{min-height:104px}
+  details.qk{margin-top:8px}
+  .row{margin-top:var(--s16);gap:12px}
+  #tab-oraculo .row .btn{flex:1 1 0;min-width:0;padding-left:16px;padding-right:16px}
+  .nota{margin-top:12px}
+  .box{margin-bottom:var(--s16)}
+  #tab-oraculo.consultado .hero{padding:var(--s16) 0 8px}
+  #tab-oraculo.consultado .dash{margin:0 0 var(--s16)}
+  .hero.slim{padding:var(--s24) 0 var(--s16)}
+  .hero.slim h1{font-size:40px}
+  .tools{margin-bottom:12px;gap:12px}
+  .count{margin-bottom:var(--s16)}
+  .ofiltros{margin:0 0 var(--s24)}
+  .band{margin-bottom:var(--s40)}
+  .band-h h2{font-size:30px}
+  .band-h p{font-size:13.5px}
+  .rodape{padding-top:var(--s16)}
+}
+/* celulares baixos (iPhone SE e afins): título e campo menores para os botões caberem sem rolar */
+@media(max-width:820px) and (max-height:720px){
+  .hero{padding-top:var(--s16);gap:8px}
+  h1{font-size:40px}
+  .lead{font-size:15px;line-height:1.45}
+  textarea{min-height:84px;padding:12px 16px}
+  .btn{padding-top:12px;padding-bottom:12px}
+}
 [hidden]{display:none!important}
 </style>
 <nav class="top">
@@ -313,7 +349,7 @@ dialog.copia textarea{min-height:180px;font-size:14px}
       <div class="det" id="detected" hidden><p class="hint">Tags que identifiquei no texto (clique no × para ignorar uma):</p><div class="chips" id="detChips"></div></div>
       <p class="hint" id="gnote" style="margin:8px 0 0"></p>
       <div class="row">
-        <button class="btn" id="go">Consultar oráculo</button>
+        <button class="btn" id="go">Consultar</button>
         <button class="btn ghost" id="clear">Limpar</button>
       </div>
       <p class="hint nota">Dados de fontes públicas e estimativas feitas com apoio de IA: confira o reel e a produtora antes de decidir.</p>
@@ -608,7 +644,7 @@ function consultar(){
   runOracle();
   if(!$("#ogrid").children.length)return;
   $("#tab-oraculo").classList.add("consultado");
-  const y=$("#ocount").getBoundingClientRect().top+scrollY-88;
+  const y=$("#ocount").getBoundingClientRect().top+scrollY-(matchMedia("(max-width:820px)").matches?16:88);
   scrollTo(0,y);
 }
 $("#go").onclick=consultar;
@@ -620,7 +656,7 @@ $("#oLimpar").onclick=limparOFiltros;
 // gaveta dos filtros do resultado (só no celular; no desktop os filtros ficam em linha)
 const abrirOFil=()=>{document.body.classList.add("ofil");$("#oFiltOpen").setAttribute("aria-expanded","true");$("#oFiltClose").focus()};
 const fecharOFil=()=>{if(!document.body.classList.contains("ofil"))return;document.body.classList.remove("ofil");$("#oFiltOpen").setAttribute("aria-expanded","false");$("#oFiltOpen").focus()};
-$("#oFiltOpen").onclick=abrirOFil;$("#oFiltClose").onclick=fecharOFil;$("#oFiltVer").onclick=()=>{fecharOFil();const y=$("#ocount").getBoundingClientRect().top+scrollY-72;scrollTo(0,y)};
+$("#oFiltOpen").onclick=abrirOFil;$("#oFiltClose").onclick=fecharOFil;$("#oFiltVer").onclick=()=>{fecharOFil();const y=$("#ocount").getBoundingClientRect().top+scrollY-(matchMedia("(max-width:820px)").matches?16:72);scrollTo(0,y)};
 document.addEventListener("click",e=>{if(document.body.classList.contains("ofil")&&!e.target.closest("#osheet,#oFiltOpen"))fecharOFil()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")fecharOFil()});
 $("#brief").addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();consultar()}});
