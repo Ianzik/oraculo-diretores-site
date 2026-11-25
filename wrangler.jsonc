@@ -1,0 +1,19 @@
+// Configuração do Cloudflare: serve o Oráculo em ianinglez.com/oraculo
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "oraculo-diretores",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-23",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "routes": [
+    { "pattern": "ianinglez.com/oraculo*", "zone_name": "ianinglez.com" }
+  ],
+  // Sem endereço *.workers.dev público: o site só existe no domínio
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": true }
+}
