@@ -1,6 +1,5 @@
 // Serve os arquivos deste repositório em ianinglez.com/oraculo
 // ianinglez.com/oraculo/              -> index.html (o app)
-// ianinglez.com/oraculo/apresentacao/ -> apresentacao/index.html
 const PREFIXO = "/oraculo";
 
 export default {
