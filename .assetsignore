@@ -5,3 +5,5 @@ wrangler.jsonc
 worker.js
 node_modules
 .wrangler
+README.md
+assets

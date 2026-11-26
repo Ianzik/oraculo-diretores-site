@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<title>Peças do README</title>
+<!-- Fonte das imagens do README. Gerar de novo: node assets/readme/source/render.js -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f7f1e8;--bone:#fefaef;--stone:#ececec;--charcoal:#4a4741;--mute:#6b6862;--onyx:#222428;--sage:#5b6550;--dusk:#d3d1ce;
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+body{background:#ddd;font-family:var(--sans);color:var(--charcoal);-webkit-font-smoothing:antialiased;padding:20px;display:grid;gap:20px;justify-content:start}
+.board{width:1200px;background:var(--cream);position:relative;overflow:hidden}
+.micro{font-size:15px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--mute)}
+.serif{font-family:var(--serif);font-weight:300;color:#000;letter-spacing:-.01em}
+.serif i{font-style:italic}
+.shot{background-image:url(oraculo-desktop.png);background-size:853px 573px;background-repeat:no-repeat}
+
+/* HERO */
+#hero{height:600px;padding:64px 64px}
+#hero h1{font-size:118px;line-height:.9;margin-top:30px}
+#hero .sub{font-size:24px;line-height:1.5;max-width:560px;margin-top:30px;color:var(--charcoal)}
+#hero .nums{position:absolute;left:64px;bottom:44px;display:flex;gap:44px;align-items:baseline}
+#hero .nums div{display:flex;flex-direction:column;gap:2px}
+#hero .nums b{font-family:var(--serif);font-weight:300;font-size:54px;line-height:1;color:#000}
+#hero .nums span{font-size:18px;color:var(--mute)}
+#hero .rule{position:absolute;left:64px;right:64px;bottom:146px;height:1px;background:var(--stone)}
+#hero .card{position:absolute;width:262px;height:198px;border-radius:8px;outline:1px solid var(--stone);transform-origin:center}
+#hero .c1{right:236px;top:96px;background-position:-296px -186px}
+#hero .c2{right:64px;top:236px;background-position:-569px -186px;outline-color:var(--charcoal)}
+#hero .tag{position:absolute;right:64px;top:64px;font-family:var(--serif);font-style:italic;font-size:22px;color:var(--sage)}
+
+/* PROVA */
+#prova{height:860px;padding:56px 64px}
+#prova .brief{background:var(--bone);border:1px solid var(--charcoal);border-radius:12px;padding:22px 26px;width:640px}
+#prova .brief p{font-size:22px;line-height:1.45;margin-top:10px;color:var(--onyx)}
+#prova .seta{position:absolute;left:96px;top:236px;width:2px;height:64px;background:var(--sage)}
+#prova .seta:after{content:"";position:absolute;left:-7px;bottom:-2px;border:8px solid transparent;border-top:11px solid var(--sage);border-bottom:0}
+#prova .legenda{position:absolute;left:128px;top:250px;font-family:var(--serif);font-style:italic;font-size:30px;color:#000}
+#prova .desk{position:absolute;left:64px;top:330px;width:830px;height:476px;border-radius:8px;outline:1px solid var(--dusk);background-size:830px auto;background-position:0 -36px;background-color:var(--cream)}
+#prova .phone{position:absolute;right:64px;top:132px;width:300px;height:650px;border-radius:34px;border:8px solid var(--onyx);background:url(oraculo-celular.png) 0 0/284px auto no-repeat;background-color:var(--cream)}
+#prova .rotulo{position:absolute;font-size:16px;color:var(--mute)}
+
+/* COMO FUNCIONA */
+#como{height:470px;padding:56px 64px}
+#como h2{font-size:56px;line-height:1}
+#como .cols{display:grid;grid-template-columns:repeat(4,1fr);margin-top:44px;border-top:1px solid var(--dusk)}
+#como .col{padding:26px 26px 0 0;margin-right:26px}
+#como .col+.col{border-left:1px solid var(--stone);padding-left:26px;margin-right:0}
+#como .n{font-family:var(--serif);font-style:italic;font-size:40px;color:var(--sage);line-height:1}
+#como h3{font-size:22px;font-weight:500;color:#000;margin-top:16px}
+#como p{font-size:19px;line-height:1.5;margin-top:10px}
+</style>
+
+<section class="board" id="hero">
+  <div class="micro">Curadoria de direção · publicidade brasileira</div>
+  <h1 class="serif">Oráculo<br><i>de diretores</i></h1>
+  <p class="sub">Cole o roteiro. O oráculo cruza tom, segmento e elenco com o acervo e devolve quem dirigiria.</p>
+  <div class="rule"></div>
+  <div class="nums">
+    <div><b>546</b><span>diretores</span></div>
+    <div><b>74</b><span>produtoras</span></div>
+    <div><b><i>toda</i> semana</b><span>varredura do mercado</span></div>
+  </div>
+  <div class="card shot c1"></div>
+  <div class="card shot c2"></div>
+</section>
+
+<section class="board" id="prova">
+  <div class="brief">
+    <div class="micro">Roteiro</div>
+    <p>Filme de 30" para uma marca de cerveja, com humor e celebridade, tom pop e leve. Verba de R$ 800 mil.</p>
+  </div>
+  <div class="seta"></div>
+  <div class="legenda">Os mais indicados, com o motivo de cada nome</div>
+  <div class="desk shot"></div>
+  <div class="phone"></div>
+  <div class="rotulo" style="left:64px;top:818px">Desktop: faixas, filtros do resultado e shortlist</div>
+  <div class="rotulo" style="right:64px;top:796px;text-align:right;width:300px">Celular: abas embaixo, ficha que sobe</div>
+</section>
+
+<section class="board" id="como">
+  <h2 class="serif">Como a base <i>se mantém viva</i></h2>
+  <div class="cols">
+    <div class="col"><div class="n">01</div><h3>Varredura semanal</h3><p>Toda segunda, notícias do mercado e emails das produtoras viram propostas de atualização.</p></div>
+    <div class="col"><div class="n">02</div><h3>Curadoria</h3><p>Nada entra sem aval: casa, reel, marcas e prêmios, sempre com fonte.</p></div>
+    <div class="col"><div class="n">03</div><h3>Acervo</h3><p>Cada perfil com reel, marcas, prêmios, base e histórico de produtoras.</p></div>
+    <div class="col"><div class="n">04</div><h3>Publicação</h3><p>O merge neste repositório coloca a nova versão no ar em minutos.</p></div>
+  </div>
+</section>
+</html>
