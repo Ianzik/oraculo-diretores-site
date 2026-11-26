@@ -6,8 +6,6 @@
 
 <p align="center">
   <a href="https://ianinglez.com/oraculo/"><strong>Abrir o Oráculo</strong></a>
-  &nbsp;·&nbsp;
-  <a href="https://ianinglez.com/oraculo/apresentacao/">Ver a apresentação</a>
 </p>
 
 <br>
@@ -39,7 +37,6 @@ Este é o repositório **publicado**. Os dados e os scripts de curadoria ficam e
 | Arquivo | Para que serve |
 | --- | --- |
 | `index.html` | O app inteiro em um arquivo só: interface, dados e busca. Não depende de servidor. |
-| `apresentacao/` | A apresentação do projeto, servida em `/oraculo/apresentacao/`. |
 | `worker.js` | Cloudflare Worker que serve o site em `ianinglez.com/oraculo`, bloqueia arquivos internos e pede aos buscadores para não indexar. |
 | `wrangler.jsonc` | Configuração do Worker (rota, sem endereço público alternativo). |
 | `assets/readme/` | Imagens deste README. Ficam fora do site publicado (`.assetsignore`). |
@@ -58,7 +55,7 @@ O visual segue um sistema próprio, pensado como um ateliê sob luz suave: tela 
 
 ## Sobre
 
-Criado por **Ian Inglez**, produtor executivo na VML, como ferramenta de curadoria para produção de publicidade.
+Criado por **Ian Inglez**, produtor executivo, como ferramenta de curadoria para produção de publicidade.
 
 Os dados vêm de fontes públicas e de estimativas feitas com apoio de IA, sempre revistas por curadoria humana. Antes de decidir, confira o reel e fale com a produtora.
 
